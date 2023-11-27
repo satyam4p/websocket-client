@@ -4,10 +4,10 @@ import SocketContext from "../../providers/Socket/SocketContext";
 
 const useSocketSubscribe = ()=>{
 
-  const {socket} = useContext(SocketContext);
+  const {socket, lastMessage} = useContext(SocketContext);
   // when the component, *which uses this hook* mounts,
 	// add a listener.
-  console.log("id iasdasdasn hook:: ", socket?.id);
+  // console.log("id iasdasdasn hook:: ", socket?.id);
   useEffect(()=>{
     
     console.log("id in hook:: ", socket?.id);
@@ -21,7 +21,7 @@ const useSocketSubscribe = ()=>{
   },[socket])
   
 
-  return socket
+  return {socket, lastMessage}
 
 }
 
