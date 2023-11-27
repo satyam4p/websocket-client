@@ -2,7 +2,7 @@
 import { error } from "console";
 import React,{ MutableRefObject, useEffect, useRef } from "react";
 import { SocketContext } from './SocketContext';
-import socketIOClient from 'socket.io-client';
+// import socketIOClient from 'socket.io-client';
 
 
 interface Props{
@@ -38,6 +38,16 @@ const SocketProvider:React.FC<Props> = ({children})=>{
     }
 
   },[])
+
+  if(connection.current?.onclose){
+
+    connection.current.onclose = ()=>{
+      console.log("socket closed")
+    }
+
+  }
+
+  
 
 
   
