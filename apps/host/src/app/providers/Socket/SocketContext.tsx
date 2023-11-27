@@ -3,7 +3,7 @@ import { createContext } from "react";
 import socketIOClient, { Socket } from 'socket.io-client';
 
 interface ISocket{
-  socket: Socket | null
+  socket: Socket | null | undefined;
 }
 
 export const SocketContext = createContext<ISocket>({socket:null});

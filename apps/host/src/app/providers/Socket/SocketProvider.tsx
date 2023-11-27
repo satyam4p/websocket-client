@@ -1,7 +1,7 @@
 
 import React,{ useEffect, useRef } from "react";
 import { SocketContext } from './SocketContext';
-import socketIOClient from 'socket.io-client';
+import socketIOClient, { Socket } from 'socket.io-client';
 
 
 interface Props{
@@ -11,15 +11,14 @@ interface Props{
 const SocketProvider:React.FC<Props> = ({children})=>{
   /** we use ref for the socket instance so that it won't be updated frequesntly */
   /**also we can use any library to instantiate and pass in the ref */
-  const socket = useRef(socketIOClient("wss://socketsbay.com",{
-      path:"/wss/v2/1/demo/",
-      autoConnect: true
-    }));
+  const socket = useRef<Socket>(socketIOClient("http://localhost:3000",{
+    path:"/websocket",
+    autoConnect: true
+  }));
   // new WebSocket("wss://socketsbay.com/wss/v2/1/demo/")
-
   useEffect(()=>{
     console.log("tryingggg")
-    socket.current.on('conenct', ()=>{
+    socket.current.on('connect', ()=>{
       console.log('SocketIO: Connected and authenticated');
     })
 
@@ -27,14 +26,25 @@ const SocketProvider:React.FC<Props> = ({children})=>{
       console.error('SocketIO: Error', msg);
     });
 
-    return ()=>{
-      if(socket && socket.current){
-        socket.current.removeAllListeners();
-        socket.current.close();
-      }
-    };
+    console.log("socket::",socket?.current?.id);
+
+
+    // return ()=>{
+    //   if(socket && socket.current){
+    //     socket.current.removeAllListeners();
+    //     socket.current.close();
+    //   }
+    // };
   },[])
-  
+
+  socket.current?.on('connect',() => {
+    console.log("connected");
+    console.log("socket id:: ",socket.current?.id)
+  })
+  // socket.current.on('message',(value)=>{
+  //   console.log("value::",value)
+  //   socket.current.send('value')
+  // })
   return (
     <SocketContext.Provider value={{socket: socket.current}}>{children}</SocketContext.Provider>
   )
