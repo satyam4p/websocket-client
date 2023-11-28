@@ -34,7 +34,7 @@ const SocketProvider:React.FC<Props> = ({children})=>{
     console.log(notification);
   })
   conn.on('sendMessage',(message)=>{
-    console.log("lastMessage:: ",message)
+    // console.log("lastMessage:: ",message)
     setLastMessage(message);
   })
   return conn
