@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
+import useAuth from "../../util/hooks/useAuth";
 // const socket = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
 import useSocketSubscribe from "../../util/hooks/useSocketSub";
 import './style.scss';
@@ -9,11 +10,17 @@ const Message = (_props:any) => {
   let [file, setFile] = useState(null);
   let [error, setError] = useState(false);
   let messageRef = useRef<HTMLDivElement>(null);
+  let [userList, setUserList] = useState<{
+    name:string,
+    userId: string | null | undefined
+  }[]>();
   let [messages, setMessages] = useState<{
     message: string,
     type: string
   }[]>([]);
-  const SendMessage:React.FormEventHandler<HTMLFormElement> | undefined | undefined = (e)=>{
+  let {currentUser} = useAuth();
+  console.log("currentUSer:: ",currentUser);
+  const SendMessage:React.FormEventHandler<HTMLFormElement> | undefined  = async (e)=>{
     e.preventDefault();
     if(socket?.sendJsonMessage){
       let newMessage = {
@@ -22,15 +29,32 @@ const Message = (_props:any) => {
       }
       console.log("readyState:: ",socket?.readyState);
       if(socket?.readyState == 1){
-
-        setMessages(prev=>[...prev, newMessage])
-        socket?.sendJsonMessage(newMessage,);
+        // setMessages(prev=>[...prev, newMessage])
+        // socket?.sendJsonMessage(newMessage,);
+        let body:FormData = new FormData();
+        body.append("message",message);
+        let to = userList?.filter(user=>currentUser?.userId != user.userId)[0];
+        console.log(to);
+        let toUserId = to?.userId as string;
+        body.append("userId",toUserId)
+        const result = await fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/broadcast",{
+          method:"POST",
+          body: body
+        })
         setMessage('')
       }else{
         setError(true)
       }
     }
   }
+  useEffect(()=>{
+    let userlist = fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/users_list",{
+      method:"GET"
+    }).then(res=>res.json()).then(result=>{
+      console.log("result in messages:: ",result);
+      setUserList(result);
+    })
+  },[])
 
   useEffect(()=>{
     if(socket?.readyState != 1){
@@ -72,9 +96,6 @@ const Message = (_props:any) => {
 
   }
 
-  const handleUpload:React.ChangeEventHandler<HTMLInputElement> | undefined = (e)=>{
-    console.log(e.target.value)
-  }
 
   return(
     <div className="messageContainer">

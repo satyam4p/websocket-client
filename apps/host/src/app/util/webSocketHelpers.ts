@@ -63,11 +63,11 @@ export const useWebSocketOptions: useWebSocketOptionsType= {
     console.log("connection closed");
   },
   retryOnError: true,
-  heartbeat: {
-    message: 'ping',
-    returnMessage: 'pong',
-    timeout: 600000, // 1 minute, if no response is received, the connection will be closed
-    interval: 10000, // every 25 seconds, a ping message will be sent
-  },
+  // heartbeat: {
+  //   message: 'ping',
+  //   returnMessage: 'pong',
+  //   timeout: 600000, // 1 minute, if no response is received, the connection will be closed
+  //   interval: 10000, // every 25 seconds, a ping message will be sent
+  // },
 
 }
