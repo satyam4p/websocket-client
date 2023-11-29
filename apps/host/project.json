@@ -51,7 +51,7 @@
       "options": {
         "buildTarget": "host:build",
         "hmr": true,
-        "port": 4200
+        "port": 4300
       },
       "configurations": {
         "development": {
@@ -76,7 +76,7 @@
       "options": {
         "buildTarget": "host:build",
         "watch": false,
-        "port": 4200
+        "port": 4300
       },
       "configurations": {
         "development": {

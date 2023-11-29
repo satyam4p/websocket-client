@@ -38,7 +38,7 @@ type useWebSocketOptionsType = {
 
 export const useWebSocketOptions: useWebSocketOptionsType= {
 
-  reconnectAttempts:RECONNECT_ATTEMPTS,
+  reconnectAttempts: RECONNECT_ATTEMPTS,
   reconnectInterval: (lastAttemptNumber)=>{
     /**the reconnect attempt number initially will be 0 then it will increase twice 
      * the last attempt untill the mx attempt number is reached */
@@ -48,6 +48,7 @@ export const useWebSocketOptions: useWebSocketOptionsType= {
     }
     return Math.min(Math.pow(2, lastAttemptNumber) * 1000, 10000) 
   },
+  // protocols:[],
   shouldReconnect: (CloseEvent)=>{
     console.log("connection closed! ",CloseEvent.reason);
     return true /**if we got disconnected normally code name: CLOSE_NORMAL */
@@ -62,11 +63,11 @@ export const useWebSocketOptions: useWebSocketOptionsType= {
     console.log("connection closed");
   },
   retryOnError: true,
-  // heartbeat: {
-  //   message: 'ping',
-  //   returnMessage: 'pong',
-  //   timeout: 600000, // 1 minute, if no response is received, the connection will be closed
-  //   interval: 10000, // every 25 seconds, a ping message will be sent
-  // },
+  heartbeat: {
+    message: 'ping',
+    returnMessage: 'pong',
+    timeout: 600000, // 1 minute, if no response is received, the connection will be closed
+    interval: 10000, // every 25 seconds, a ping message will be sent
+  },
 
 }

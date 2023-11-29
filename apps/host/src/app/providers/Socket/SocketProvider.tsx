@@ -28,6 +28,10 @@ const SocketProvider:React.FC<Props> = ({children})=>{
       console.log("error occured for connection")
     }
   }
+  socket?.addEventListener('close',()=>{
+    console.log("connection got closed")
+  })
+
   
   return (
     <SocketContext.Provider value={{socket: {sendMessage, lastMessage, sendJsonMessage, getWebSocket, readyState}}}>{children}</SocketContext.Provider>
