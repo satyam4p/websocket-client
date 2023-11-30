@@ -11,7 +11,8 @@
   max-height: 80vh;
   position: relative;
   border-radius: 0.2em;
-  background-color: #F5F9FD;
+  background-color: #f5f9fd69;
+  box-shadow: 2px 3px 12px -3px rgba(0, 0, 0, 0.10);
   font-size: 0.8em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin-top: 5%;
@@ -36,13 +37,14 @@
       .identifier{
         border-radius: 0.5em;
         padding: 0.2em;
+        font-weight: 600;
       }
 
       .identifier.sent{
         color: darkgreen;
       }
       .identifier.received{
-        color: blue;
+        color: #2962FF;
         
       }
     }
@@ -69,7 +71,7 @@
         width: 15%;
         padding: 0.5em;
         border: none;
-        background-color: #237CD5;
+        background-color: #2962FF;
         border-radius: 0.5em;
         color: rgb(245, 243, 243);
       }

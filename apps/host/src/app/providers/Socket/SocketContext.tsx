@@ -10,7 +10,6 @@ interface ISocket{
   lastMessage: any;
   getWebSocket: any;
   readyState: ReadyState;
-  userId:string | null | undefined;
  } | null
 }
 

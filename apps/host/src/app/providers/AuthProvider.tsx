@@ -6,11 +6,14 @@ type userType = {
 } | null;
 
 interface AuthContextType {
-    client_url: string | null,
+    client_url: {
+      client_url: string | null
+    } | null,
     setUser:any,
-    currentUser:userType
+    currentUser:userType,
+    setClientUrl:any
 }
-export const AuthContext = createContext<AuthContextType>({client_url:null, setUser:null, currentUser:null});
+export const AuthContext = createContext<AuthContextType>({client_url:null, setUser:null, currentUser:null, setClientUrl:null});
 
 interface Props{
   children: React.ReactNode;
@@ -21,24 +24,24 @@ const AuthProvider:React.FC<Props> = ({children})=>{
   const [client_url, setClientUrl] = useState(null);
   const [useId, setUserId] = useState();
   const [currentUser, setUser] = useState<userType>(null)
-  
-  useEffect(()=>{
-    let formData:FormData = new FormData();
-    // let userId = Math.floor(Math.random()*100).toString();
-    // formData.append("userId",userId)
-    console.log("currentUser:: ",currentUser);
-    fetch(`https://3b48-111-92-126-193.ngrok-free.app/chats/negotiate/`,{
-      method:"POST",
-      body:formData,
-      headers:{
 
-      }}).then(res=>res.json()).then(client=>{
-        setClientUrl(client.client_url);
-      })
-  },[setClientUrl])
+  // useEffect(()=>{
+  //   let formData:FormData = new FormData();
+  //   // let userId = Math.floor(Math.random()*100).toString();
+  //   // formData.append("userId",userId)
+  //   console.log("currentUser:: ",currentUser);
+  //   fetch(`https://3b48-111-92-126-193.ngrok-free.app/chats/negotiate/`,{
+  //     method:"POST",
+  //     body:formData,
+  //     headers:{
+
+  //     }}).then(res=>res.json()).then(client=>{
+  //       setClientUrl(client.client_url);
+  //     })
+  // },[setClientUrl])
   // console.log("client url in auth provider:: ",client_url);
   return(
-    <AuthContext.Provider value={{client_url: client_url, setUser: setUser, currentUser: currentUser}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{client_url: client_url, setClientUrl, setUser: setUser, currentUser: currentUser}}>{children}</AuthContext.Provider>
   )
 }
 

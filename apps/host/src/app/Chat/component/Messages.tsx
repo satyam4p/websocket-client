@@ -4,12 +4,18 @@ import useAuth from "../../util/hooks/useAuth";
 import useSocketSubscribe from "../../util/hooks/useSocketSub";
 import './style.scss';
 
+
+type userType = {
+  name: string;
+  userId:string | undefined | null
+} | null;
+
 const Message = (_props:any) => {
   let socket = useSocketSubscribe();
   let [message, setMessage] = useState<string>('');
-  let [file, setFile] = useState(null);
   let [error, setError] = useState(false);
   let messageRef = useRef<HTMLDivElement>(null);
+  const [secondUser, setSecond] = useState<userType>();
   let [userList, setUserList] = useState<{
     name:string,
     userId: string | null | undefined
@@ -29,31 +35,42 @@ const Message = (_props:any) => {
       }
       console.log("readyState:: ",socket?.readyState);
       if(socket?.readyState == 1){
-        // setMessages(prev=>[...prev, newMessage])
-        // socket?.sendJsonMessage(newMessage,);
+        setMessages(prev=>[...prev, newMessage])
         let body:FormData = new FormData();
         body.append("message",message);
         let to = userList?.filter(user=>currentUser?.userId != user.userId)[0];
         console.log(to);
         let toUserId = to?.userId as string;
         body.append("userId",toUserId)
-        const result = await fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/broadcast",{
-          method:"POST",
-          body: body
-        })
-        setMessage('')
+        try{
+          const result = await fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/broadcast",{
+            method:"POST",
+            body: body
+            })
+          setMessage('')
+
+        }catch(error){
+          console.log("error occured while sending message");
+        }
       }else{
         setError(true)
       }
     }
   }
   useEffect(()=>{
-    let userlist = fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/users_list",{
-      method:"GET"
-    }).then(res=>res.json()).then(result=>{
-      console.log("result in messages:: ",result);
-      setUserList(result);
-    })
+    try{
+      let userlist = fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/users_list",{
+        method:"GET"
+      }).then(res=>res.json()).then(result=>{
+        console.log("result in messages:: ",result);
+        setUserList(result);
+        let second=result.filter((user: { userId: string | null | undefined; })=>user.userId!=currentUser?.userId)[0]
+        setSecond(second);
+      })
+    }catch(error){
+      console.log("error occured while fetching users list:: ",error);
+    }
+    
   },[])
 
   useEffect(()=>{
@@ -66,8 +83,10 @@ const Message = (_props:any) => {
 
   useEffect(()=>{ 
     if(socket?.lastMessage){
+      let regex = /"(.*?)"/
+      let sanitised = socket?.lastMessage.data.split(regex)[1];
       let serverMessage = {
-        "message": socket?.lastMessage.data,
+        "message": sanitised,
         "type": "server"
       }
       setMessages(prev=>[...prev, serverMessage])
@@ -103,11 +122,11 @@ const Message = (_props:any) => {
         {messages && messages.map((message, index)=>{
           if(message.type == "user"){
             return(
-              <div className="message sent" key={index}><span className="identifier sent">Sent: </span> <span>{message.message}</span></div>
+              <div className="message sent" key={index}><span className="identifier sent">{currentUser?.name}: </span> <span>{message.message}</span></div>
             )
           }
           return(
-            <div className="message received" key={index}><span className="identifier received">Received: </span> <span>{message.message}</span></div>
+            <div className="message received" key={index}><span className="identifier received">{secondUser?.name}: </span> <span>{message.message}</span></div>
           )
         })}
         { error 
