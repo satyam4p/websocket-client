@@ -48,7 +48,7 @@ export const useWebSocketOptions: useWebSocketOptionsType= {
     }
     return Math.min(Math.pow(2, lastAttemptNumber) * 1000, 10000) 
   },
-  // protocols:[],
+  // protocols:["json.reliable.webpubsub.azure.v1"],
   shouldReconnect: (CloseEvent)=>{
     console.log("connection closed! ",CloseEvent.reason);
     return true /**if we got disconnected normally code name: CLOSE_NORMAL */

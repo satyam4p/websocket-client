@@ -4,6 +4,7 @@ import useAuth from "../../util/hooks/useAuth";
 import useSocketSubscribe from "../../util/hooks/useSocketSub";
 import './style.scss';
 
+const GROUP_NAME = "DEFAULT"
 
 type userType = {
   name: string;
@@ -35,20 +36,23 @@ const Message = (_props:any) => {
       }
       console.log("readyState:: ",socket?.readyState);
       if(socket?.readyState == 1){
-        setMessages(prev=>[...prev, newMessage])
         let body:FormData = new FormData();
         body.append("message",message);
         let to = userList?.filter(user=>currentUser?.userId != user.userId)[0];
         console.log(to);
         let toUserId = to?.userId as string;
         body.append("userId",toUserId)
+        body.append("groupName", GROUP_NAME);
+        body.append("fromUser", currentUser?.userId as string);
         try{
           const result = await fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/broadcast",{
             method:"POST",
             body: body
             })
           setMessage('')
-
+          if(result.status == 200){
+            setMessages(prev=>[...prev, newMessage])
+          }
         }catch(error){
           console.log("error occured while sending message");
         }
@@ -118,15 +122,22 @@ const Message = (_props:any) => {
 
   return(
     <div className="messageContainer">
+      {/* <div className="header">
+        <p>{secondUser?.name}</p>
+      </div> */}
       <div className="chat-container">
         {messages && messages.map((message, index)=>{
           if(message.type == "user"){
             return(
-              <div className="message sent" key={index}><span className="identifier sent">{currentUser?.name}: </span> <span>{message.message}</span></div>
+              <div className="atomic-message" key={index}>
+              <div className="message sent" key={index}><span className="identifier sent">You: </span> <span>{message.message}</span></div>
+              </div>
             )
           }
           return(
+            <div className="atomic-message" key={index}>
             <div className="message received" key={index}><span className="identifier received">{secondUser?.name}: </span> <span>{message.message}</span></div>
+            </div>
           )
         })}
         { error 

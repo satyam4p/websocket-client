@@ -6,6 +6,7 @@ import useWebSocket,{ ReadyState } from 'react-use-websocket';
 import { useWebSocketOptions } from '../../util/webSocketHelpers';
 import useAuth from "../../util/hooks/useAuth";
 
+const GROUP_NAME = "DEFAULT"
 interface Props{
   children: React.ReactNode;
 }
@@ -20,7 +21,7 @@ interface Props{
 // async function logMovies() {  const response = await fetch("http://example.com/movies.json");  const movies = await response.json();  console.log(movies);}
 
 const SocketProvider:React.FC<Props> = ({children})=>{
-  const {client_url}  = useAuth();
+  const {client_url, currentUser}  = useAuth();
   let URL = client_url?.client_url as string;
   if(!URL){
     try{
@@ -41,10 +42,33 @@ const SocketProvider:React.FC<Props> = ({children})=>{
   useEffect( () => {
     if(readyState == ReadyState.OPEN){
       console.log("we are connected");
+      let body = new FormData()
+      let userId = currentUser?.userId as string;
+      body.append("userId",userId)
+      body.append("groupName", GROUP_NAME);
+      try{
+          fetch("https://3b48-111-92-126-193.ngrok-free.app/chats/add_user",{
+          method:"POST",
+          body: body
+        }).then(res=>res.json()).then(res=>{
+          console.log("response from add user:: ",res);
+        })
+      }catch(error){
+        console.log("error while adding user");
+      }
+      
+      
     }else{
       console.log("not connected");
     }
   },[readyState])
+
+  let socket = getWebSocket();
+  if(socket?.onopen){
+    socket.onopen = ()=>{
+      
+    }
+  }
 
   // const socket = getWebSocket();
   // if(socket?.onerror){
