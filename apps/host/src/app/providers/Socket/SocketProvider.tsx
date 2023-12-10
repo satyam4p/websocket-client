@@ -14,8 +14,8 @@ const SocketProvider:React.FC<Props> = ({children})=>{
   const [lastMessage, setLastMessage] = useState('');
   const [socket, setSocket] = useState<Socket | null>(null);
   const connection = useMemo(()=>{
-    let conn = socketIOClient("http://localhost:3000",{
-    path:"/websocket",
+    let conn = socketIOClient("https://inbox-chat-socket.webpubsub.azure.com",{
+    path:"/clients/socketio/hubs/Hub",
     autoConnect: true,
     query: {
       name: "test"+Math.random().toString(),

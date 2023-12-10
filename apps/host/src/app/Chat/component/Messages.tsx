@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 // const socket = new WebSocket("wss://socketsbay.com/wss/v2/1/demo/");
 import useSocketSubscribe from "../../util/hooks/useSocketSub";
+import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const style = {
   border:'0.1em solid grey',
@@ -26,7 +28,8 @@ const Message = (_props:any) => {
 
   const handleSend = ()=>{
     console.log("socket id in messages:: ",socket?.id);
-
+    // await call the rest ROR api- get 200 response, if error: then /retry.
+    // if api response 200
     socket?.emit('message',value, ()=>{
       console.log("message was delivered");
       let message = {
@@ -37,7 +40,6 @@ const Message = (_props:any) => {
       }
       setMessages(prev=>[...prev, message])
     });
-
   }
 
 
@@ -63,7 +65,9 @@ const Message = (_props:any) => {
           return (
             <div key={index} style={style}>
               <div className="message-container" key={index}><span>{message.type}: </span>{message.message}</div>
-              <span style={{color:'blue'}}>{message.delivered && message.type == "SENT" ? "sent" : ''}</span>
+              {/* <span style={{color:'blue'}}>{message.delivered && message.type == "SENT" ? "sent" : ''}</span> */}
+              {message.delivered && message.type == "SENT" ? <FontAwesomeIcon icon={faCheck}/> : null}
+              
             </div>
           )
         })
