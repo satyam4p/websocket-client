@@ -29,6 +29,7 @@ const Message = (_props:any) => {
   console.log("currentUSer:: ",currentUser);
   const SendMessage:React.FormEventHandler<HTMLFormElement> | undefined  = async (e)=>{
     e.preventDefault();
+    if(message.length < 1) return;
     if(socket?.sendJsonMessage){
       let newMessage = {
         "message": message,

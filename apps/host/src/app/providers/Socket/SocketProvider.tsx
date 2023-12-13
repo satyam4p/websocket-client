@@ -56,8 +56,6 @@ const SocketProvider:React.FC<Props> = ({children})=>{
       }catch(error){
         console.log("error while adding user");
       }
-      
-      
     }else{
       console.log("not connected");
     }

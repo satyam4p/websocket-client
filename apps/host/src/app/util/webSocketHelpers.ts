@@ -57,7 +57,7 @@ export const useWebSocketOptions: useWebSocketOptionsType= {
     console.log("connection open")
   },
   onMessage: (event)=>{
-    console.log("received message from server:: ",event.data);
+    // console.log("received message from server:: ",event.data);
   },
   onClose: (event)=>{
     console.log("connection closed");
